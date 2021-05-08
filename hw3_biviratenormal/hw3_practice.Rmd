@@ -1,0 +1,186 @@
+---
+title: "R Notebook"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+```{r}
+library("mvtnorm")
+```
+
+```{r}
+#PART 1 
+#(1)
+mu.x = 0.05
+sig.x = 0.10
+mu.y = 0.025
+sig.y = 0.05
+```
+
+```{r}
+rho.xy = 0.9
+sig.xy = rho.xy*sig.x*sig.y
+Sigma.xy = matrix(c(sig.x^2, sig.xy, sig.xy, sig.y^2), 2, 2, byrow=TRUE)
+Sigma.xy
+```
+
+```{r}
+n = 100
+set.seed(123)
+xy.vals = rmvnorm(n, mean=c(mu.x, mu.y), sigma=Sigma.xy)
+head(xy.vals)
+```
+
+```{r}
+plot(xy.vals[,1], xy.vals[,2], pch=16, cex=2, col="blue",
+xlab="x", ylab="y")
+title("Bivariate normal: rho=0.5")
+abline(h=mu.y, v=mu.x)
+segments(x0=0, y0=min(xy.vals[,2]), x1=0, y1=0, col="red")
+segments(x0=min(xy.vals[,1]), y0=0, x1=0, y1=0, col="red")
+```
+```{r}
+#comment
+#when rho=0.5,呈正相關
+```
+
+```{r}
+pmvnorm(lower=c(-Inf, -Inf), upper=c(0, 0), mean=c(mu.x, mu.y), sigma=Sigma.xy)
+```
+
+```{r}
+#(2)
+rho.xy = -0.9
+sig.xy = rho.xy*sig.x*sig.y
+Sigma.xy = matrix(c(sig.x^2, sig.xy, sig.xy, sig.y^2), 2, 2, byrow=TRUE)
+n = 100
+set.seed(123)
+xy.vals = rmvnorm(n, mean=c(mu.x, mu.y), sigma=Sigma.xy)
+```
+
+```{r}
+plot(xy.vals[,1], xy.vals[,2], pch=16, cex=2, col="blue",
+xlab="x", ylab="y")
+title("Bivariate normal: rho=-0.9")
+abline(h=mu.y, v=mu.x)
+segments(x0=0, y0=min(xy.vals[,2]), x1=0, y1=0, col="red")
+segments(x0=min(xy.vals[,1]), y0=0, x1=0, y1=0, col="red")
+```
+```{r}
+#comment
+#when rho=-0.9,呈高度負相關
+```
+
+```{r}
+pmvnorm(lower=c(-Inf, -Inf), upper=c(0, 0), mean=c(mu.x, mu.y), sigma=Sigma.xy)
+```
+
+```{r}
+#(3)
+rho.xy = 0
+sig.xy = rho.xy*sig.x*sig.y
+Sigma.xy = matrix(c(sig.x^2, sig.xy, sig.xy, sig.y^2), 2, 2, byrow=TRUE)
+n = 100
+set.seed(123)
+xy.vals = rmvnorm(n, mean=c(mu.x, mu.y), sigma=Sigma.xy)
+```
+
+```{r}
+plot(xy.vals[,1], xy.vals[,2], pch=16, cex=2, col="blue",
+xlab="x", ylab="y")
+title("Bivariate normal: rho=0.0")
+abline(h=mu.y, v=mu.x)
+segments(x0=0, y0=min(xy.vals[,2]), x1=0, y1=0, col="red")
+segments(x0=min(xy.vals[,1]), y0=0, x1=0, y1=0, col="red")
+```
+```{r}
+#comment
+#when rho=0.0,零相關
+```
+
+```{r}
+pmvnorm(lower=c(-Inf, -Inf), upper=c(0, 0), mean=c(mu.x, mu.y), sigma=Sigma.xy)
+```
+
+```{r}
+#PART 2
+#(1)
+matA=matrix(data=c(1,2,6,4,4,1,7,8,3),nrow=3,ncol=3)
+matA
+matB=matrix(data=c(4,5,2,4,9,2,0,1,5),nrow=3,ncol=3)
+matB
+x=matrix(c(1,2,3),nrow=3,ncol=1)
+x
+y=matrix(c(5,2,7),nrow=3,ncol=1)
+y
+```
+
+```{r}
+#(2)
+t(matA)
+t(matB)
+t(x)
+t(y)
+```
+
+```{r}
+#(3)
+matA+matB
+matA-matB
+2*matA
+matA%*%x
+t(x)%*%matA%*%y
+t(y)%*%matA%*%x
+```
+
+```{r}
+#(4)
+plot(c(-3,3), c(-3,3),type="n",xlab ="x",ylab ="y",main="x+2y=1,2x+4y=2",asp=1)
+abline(a=1,b=-1,col="red")
+abline(a=0.5,b=-0.5,col="blue")
+
+matA=matrix(c(1,2,1,4),2,2)
+matA.inv=solve(matA)
+vecB=c(1,2)
+z=matA.inv%*%vecB
+z
+```
+
+```{r}
+#(5)
+x.vec=rep(1,3)/3
+matR=matrix(c(0.01,0.04,0.02),nrow=3,ncol=1,byrow=TRUE)
+mu=crossprod(x.vec,matR)
+mu
+#expected_return 
+#0.02333333
+
+
+sig.mat=matrix(c(0.1,0.3,0.1,0.3,0.15,-0.2,0.1,-0.2,0.08),3,3)
+var=t(x.vec)%*%sig.mat%*%x.vec
+var
+#variance
+#0.08111111
+```
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,119 @@
+---
+title: "hw2"
+author: "Aaron Lin"
+date: "2021/4/4"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+#1
+pnorm(0.1,mean=0.05,sd=0.1,lower.tail=FALSE)
+pnorm(-0.1,mean=0.05,sd=0.1)
+
+a=pnorm(0.15,mean=0.05,sd=0.1)
+b=pnorm(-0.05,mean=0.05,sd=0.1)
+a-b
+
+qnorm(0.01,mean=0.05,sd=0.1)
+qnorm(0.05,mean=0.05,sd=0.1)
+qnorm(0.95,mean=0.05,sd=0.1)
+qnorm(0.99,mean=0.05,sd=0.1)
+```
+
+```{r}
+#2
+intervals <- seq(-0.25, 0.35,length=1000)
+hx <- dnorm(intervals,0.05,0.1)
+hy <- dnorm(intervals,0.025,0.05)
+plot(intervals, hx ,xlab="monthly return", ylab="",type="l", col="blue",ylim = c(0,8))
+lines(intervals, hy, type="l", col="red")
+legend("topright",legend=c("Microsoft","Starbucks"),col=c("blue","red"),lty=1,cex=0.6)
+
+#Starbucks的變異較小，且其預期的return較高，所以有較低的風險 
+```
+```{r}
+#3
+w0 = 100000
+#VaR= SimpleReturn * w0
+qnorm(0.01, mean=0.04, sd=0.09) * w0
+qnorm(0.05, mean=0.04, sd=0.09) * w0
+```
+
+```{r}
+#4
+w0 = 100000;
+# r = ln(1+R),R=e^r-1
+#1
+#Compounded Return
+r.01 = qnorm(0.01, mean=0.04, sd=0.09)
+r.05 = qnorm(0.05, mean=0.04, sd=0.09)
+#Simple Retern
+R.01 = exp(r.01)-1
+R.05 = exp(r.05)-1
+
+R.01*w0
+R.05*w0
+
+#2
+#For annual
+#mean and standard deviation
+x=12*0.04
+y=sqrt(12*(0.09)^2)
+
+#Compounded Return
+ra.01 = qnorm(0.01,x,y)
+ra.05 = qnorm(0.05,x,y)
+#Simple retern
+Ra.01 = exp(ra.01)-1
+```
+
+
+```{r}
+Ra.05 = exp(ra.05)-1
+
+Ra.01*w0
+Ra.05*w0
+
+```
+
+```{r}
+#5-1
+curve(dchisq(x, df=1),0,30,col='darkgreen',main= 'Distribution Plot (Chi-Square)',ylab = 'Density',lwd =1)
+curve(dchisq(x, df=2), col='red',lwd=1, add=TRUE)
+curve(dchisq(x, df=5), col='blue',lwd=1, add=TRUE)
+curve(dchisq(x, df=10), col='orange',lwd=1, add=TRUE)
+legend("topright",legend=c("df=1","df=2","df=5","df=10"),col=c("darkgreen","red","blue","orange"),lty=1,cex=1)
+
+```
+```{r}
+#5-2
+curve(dnorm(x),-5,5,col='black',main= 'Distribution Plot (T)',ylab = 'Density',lwd =1)
+curve(dt(x, df=1), col='darkgreen',lwd=1,add=TRUE)
+curve(dt(x, df=2), col='red',lwd=1, add=TRUE)
+curve(dt(x, df=5), col='blue',lwd=1, add=TRUE)
+curve(dt(x, df=10), col='orange',lwd=1, add=TRUE)
+legend("topright",legend=c("df=1","df=2","df=5","df=10","normal"),col=c("darkgreen","red","blue","orange","black"),lty=1,cex=1)
+```
+```{r}
+#q6 and q7
+knitr::include_graphics("./q6_q7.jpeg")
+```
+
+```{r}
+#q8 and q9
+knitr::include_graphics("./q8_q9.jpeg")
+```
+
